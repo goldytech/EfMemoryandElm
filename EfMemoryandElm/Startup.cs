@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 using Data;
 using Microsoft.EntityFrameworkCore;
 
+
+
 namespace EfMemoryandElm
 {
     public class Startup
@@ -13,6 +15,11 @@ namespace EfMemoryandElm
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddElm(elmOptions =>
+            {
+               
+                elmOptions.Filter = (loggerName, loglevel) => loglevel == LogLevel.Debug;
+            });
             services.AddMvc();
             services.AddDbContext<InMemoryDbContext>(options => options.UseInMemoryDatabase());
         }
@@ -20,7 +27,8 @@ namespace EfMemoryandElm
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole();
+           app.UseElmPage();
+           app.UseElmCapture();
 
             if (env.IsDevelopment())
             {
